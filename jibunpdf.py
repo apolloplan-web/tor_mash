@@ -205,11 +205,11 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         """别ウィンドウを立ち上げて高解像度化したページプレビューを表示する"""
         zoom_window = ctk.CTkToplevel(self)
         zoom_window.title(f"拡大プレビュー - {page_info['label']}")
-        
         zoom_window.attributes("-topmost", True)
+        zoom_factor = 0.6
 
         pil_large_img = self.get_page_thumbnail(
-            page_info["file_path"], page_info["page_num"], zoom_factor=0.6
+            page_info["file_path"], page_info["page_num"], zoom_factor = zoom_factor
         )
         # toolbar
         toolbar = ctk.CTkFrame(zoom_window)
@@ -231,15 +231,15 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         canvas.create_image(0, 0, anchor="nw", image=tk_img)
 
         # クリックで注釈追加（モードが 'text' の時のみ）
-        def on_canvas_click(event, p=page_info, zoom=zoom_factor):
+        def on_canvas_click(event):
             if self.annotation_mode == 'text':
                 # テキスト入力ダイアログ
                 text = simpledialog.askstring("注釈テキスト", "注釈内容を入力してください:") 
                 if text:
                     # canvas のピクセル座標 -> PDF 座標へ変換
-                    pdf_x = event.x / zoom
-                    pdf_y = event.y / zoom
-                    self.add_text_annotation(p, pdf_x, pdf_y, text)
+                    pdf_x = event.x / zoom_factor
+                    pdf_y = event.y / zoom_factor
+                    self.add_text_annotation(page_info, pdf_x, pdf_y, text)
                     # 注釈を追加したらサムネイルを更新して UI を再描画
                     self.refresh_page_list_ui()
 
