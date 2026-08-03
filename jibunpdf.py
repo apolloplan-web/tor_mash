@@ -255,8 +255,9 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         try:
             doc = fitz.open(file_path)
             page = doc.load_page(page_num)
-            # PyMuPDF の Point を使って付箋注釈を追加
-            page.add_text_annot(fitz.Point(pdf_x, pdf_y), text)
+            # PyMuPDF の Rect を使ってフリーテキスト注釈を追加
+            rect = fitz.Rect(pdf_x, pdf_y, pdf_x +200, pdf_y+50) 
+            page.add_freetext_annot(rect, text, fontsize=14, fontname="cjk", text_color=(0, 0, 0))
 
             # 一時ファイルに保存して元ファイルを置換（安全なフロー）
             fd, tmp_path = tempfile.mkstemp(suffix=".pdf")
