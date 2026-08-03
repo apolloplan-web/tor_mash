@@ -31,6 +31,7 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.top_frame = ctk.CTkFrame(self, height=60)
         self.top_frame.pack(fill="x", padx=20, pady=(20, 10))
 
+        #erase --start--
         self.open_button = ctk.CTkButton(
             self.top_frame, text="open pdf", command=self.open_pdf
         )
@@ -42,9 +43,10 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
             text_color="gray",
         )
         self.file_label.pack(side="left", padx=10, pady=10)
+        #erase --end--
 
         self.list_frame = ctk.CTkScrollableFrame(
-            self, label_text="Contents List (Drop PDF here)"
+            self, label_text="Contents List (PDFをDrag&Drop)"
         )
         self.list_frame.pack(fill="both", expand=True, padx=20, pady=10)
 
@@ -56,12 +58,13 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
 
         self.save_button = ctk.CTkButton(
             self.bottom_frame,
-            text="save as looks",
+            text="この並び順で名前を付けて保存",
             command=self.save_pdf,
             state="disabled",
         )
         self.save_button.pack(side="right", padx=10, pady=10)
 
+    #erase --start--
     def open_pdf(self):
         """ボタンからPDFを開く"""
         file_path = filedialog.askopenfilename(
@@ -71,6 +74,7 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
             return
         self.pages_list = []
         self.add_pdf_to_list(file_path)
+    #erase --end--
 
     def drop_pdf(self, event):
         """ファイルがドロップされたときの処理"""
@@ -107,7 +111,6 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         return img
 
     def add_pdf_to_list(self, file_path):
-        """データ構造に ImageTk オブジェクトをキャッシュするように拡張"""
         try:
             reader = pypdf.PdfReader(file_path)
             file_name = os.path.basename(file_path)
