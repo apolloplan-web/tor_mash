@@ -3,12 +3,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import customtkinter as ctk
 import pypdf
-
-# サムネイル処理用に PyMuPDF と Pillow を追加 
 import fitz  # PyMuPDF
 from PIL import Image, ImageTk
-
-# ドラッグ＆ドロップ機能のインポート
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
 ctk.set_appearance_mode("System")
@@ -21,20 +17,17 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         self.TkdndVersion = TkinterDnD._require(self)
 
         self.title("PDFEditorApp - phase3.5 (Thumbnails & Zoom)")
-        # サムネイルが入るため横幅を少し広く設定
         self.geometry("750x600")
         self.minsize(650, 450)
 
         self.pages_list = []
         self.setup_ui()
 
-        # ウィンドウ全体でもドロップを受け付けるように設定（空リスト状態対策）
         self.drop_target_register(DND_FILES)
         self.dnd_bind("<<Drop>>", self.drop_pdf)
 
     def setup_ui(self):
         """画面レイアウトの構築"""
-        # 上部：操作ボタンエリア
         self.top_frame = ctk.CTkFrame(self, height=60)
         self.top_frame.pack(fill="x", padx=20, pady=(20, 10))
 
@@ -50,17 +43,14 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         )
         self.file_label.pack(side="left", padx=10, pady=10)
 
-        # 中央：ページリスト表示エリア（スクロール可能）
         self.list_frame = ctk.CTkScrollableFrame(
             self, label_text="Contents List (Drop PDF here)"
         )
         self.list_frame.pack(fill="both", expand=True, padx=20, pady=10)
 
-        # リストフレーム自体にもドロップイベントを登録
         self.list_frame.drop_target_register(DND_FILES)
         self.list_frame.dnd_bind("<<Drop>>", self.drop_pdf)
 
-        # 下部：保存ボタンエリア
         self.bottom_frame = ctk.CTkFrame(self, height=60)
         self.bottom_frame.pack(fill="x", padx=20, pady=(10, 20))
 
@@ -124,9 +114,7 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
             total_pages = len(reader.pages)
 
             for i in range(total_pages):
-                # サムネイル画像の元データを生成 (幅が約60〜80pxになるよう低解像度で取得)
                 pil_img = self.get_page_thumbnail(file_path, i, zoom_factor=0.15)
-                # 縦横比を維持して高さ最大60pxに縮小
                 pil_img.thumbnail((80, 60))
                 ctk_img = ctk.CTkImage(light_image=pil_img, dark_image=pil_img, size=pil_img.size)
 
@@ -135,7 +123,7 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
                         "file_path": file_path,
                         "page_num": i,
                         "label": f"{file_name} - {i + 1}ページ目",
-                        "thumb_img": ctk_img,  # 追加：サムネイルオブジェクト
+                        "thumb_img": ctk_img,
                     }
                 )
 
@@ -160,11 +148,9 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
             row_frame = ctk.CTkFrame(self.list_frame)
             row_frame.pack(fill="x", padx=5, pady=4)
 
-            # サムネイル画像の配置
             img_label = ctk.CTkLabel(row_frame, text="", image=page_info["thumb_img"])
             img_label.pack(side="left", padx=10, pady=2)
             
-            # サムネイルと文字ラベルの双方にダブルクリック（拡大）イベントを付与
             img_label.bind("<Double-1>", lambda e, p=page_info: self.open_zoom_window(p))
 
             lbl = ctk.CTkLabel(row_frame, text=page_info["label"], anchor="w")
@@ -194,10 +180,8 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         zoom_window = ctk.CTkToplevel(self)
         zoom_window.title(f"拡大プレビュー - {page_info['label']}")
         
-        # 親ウィンドウの手前に表示させる設定
         zoom_window.attributes("-topmost", True)
 
-        # 元のサムネイル(0.15)の4倍の解像度でPDFから直接描画を切り出す
         pil_large_img = self.get_page_thumbnail(
             page_info["file_path"], page_info["page_num"], zoom_factor=0.6
         )
@@ -250,14 +234,13 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
 
             with open(save_path, "wb") as f:
                 writer.write(f)
-            messagebox.showinfo("成功", "PDFが正しく結合・保存されました！")
+            messagebox.showinfo("成功", "PDFが正しく結合されました！")
         except Exception as e:
             messagebox.showerror(
                 "エラー", f"ファイルの保存中にエラーが発生しました:\n{e}"
             )
 
     def refresh_page_list_ui(self):
-        """【変更】右端にゴミ箱（削除）ボタンを配置するよう拡張"""
         for widget in self.list_frame.winfo_children():
             widget.destroy()
 
@@ -265,17 +248,14 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
             row_frame = ctk.CTkFrame(self.list_frame)
             row_frame.pack(fill="x", padx=5, pady=4)
 
-            # サムネイル画像の配置
             img_label = ctk.CTkLabel(row_frame, text="", image=page_info["thumb_img"])
             img_label.pack(side="left", padx=10, pady=2)
             img_label.bind("<Double-1>", lambda e, p=page_info: self.open_zoom_window(p))
 
-            # ページのテキストラベル
             lbl = ctk.CTkLabel(row_frame, text=page_info["label"], anchor="w")
             lbl.pack(side="left", padx=10, fill="x", expand=True)
             lbl.bind("<Double-1>", lambda e, p=page_info: self.open_zoom_window(p))
 
-            # ───【追加】右端：ゴミ箱ボタン（視認性のために少し赤みを持たせる） ───
             del_btn = ctk.CTkButton(
                 row_frame,
                 text="削除",
@@ -285,9 +265,7 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 command=lambda i=index: self.delete_page(i),
             )
             del_btn.pack(side="right", padx=10)
-            # ──────────────────────────────────────────────────────────────
 
-            # 中央右：下へボタン
             if index < len(self.pages_list) - 1:
                 down_btn = ctk.CTkButton(
                     row_frame,
@@ -301,7 +279,6 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 spacer_down = ctk.CTkLabel(row_frame, text="", width=60)
                 spacer_down.pack(side="right", padx=2)
 
-            # 中央右：上へボタン
             if index > 0:
                 up_btn = ctk.CTkButton(
                     row_frame,
@@ -315,7 +292,6 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 spacer_up = ctk.CTkLabel(row_frame, text="", width=60)
                 spacer_up.pack(side="right", padx=2)
 
-    # ───【新設】指定されたインデックスのページを削除する関数 ───
     def delete_page(self, index):
         """リストから要素を削除し、ヘッダーの数字とUIを最新状態にする"""
         if 0 <= index < len(self.pages_list):
