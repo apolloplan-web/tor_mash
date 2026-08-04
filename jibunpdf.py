@@ -86,13 +86,13 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
     def drop_pdf(self, event):
         try:
             raw = event.data
-            file_path = self._parse_dnd_paths(raw)
+            file_paths = self._parse_dnd_paths(raw)
             valid_files_added = False
             for path in file_paths:
                 path = path.strip()
                 if path.lower().endswith(".pdf") and os.path.exists(path):
                     self.add_pdf_to_list(path)
-                    valid_files_addes = True
+                    valid_files_added = True
 
             if not valid_files_added:
                 messagebox.showwarning(
