@@ -206,7 +206,7 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         zoom_window = ctk.CTkToplevel(self)
         zoom_window.title(f"拡大プレビュー - {page_info['label']}")
         zoom_window.attributes("-topmost", True)
-        zoom_factor = 0.6
+        zoom_factor = 0.9
 
         pil_large_img = self.get_page_thumbnail(
             page_info["file_path"], page_info["page_num"], zoom_factor = zoom_factor
@@ -302,8 +302,8 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
                 lbl.pack(side="left", fill="x", expand=True, padx=(6, 8))
                 def _delete(a=annot):
                     try:
-                        # 再取得して削除（annot オブジェクトが生きていれば直接 delete でも可）
-                        a.delete()
+                        # 再取得して削除（）
+                        page.delete_annot(a)
                         # 保存して置換
                         fd, tmp_path = tempfile.mkstemp(suffix=".pdf")
                         os.close(fd)
@@ -409,7 +409,7 @@ class PDFEditorApp(ctk.CTk, TkinterDnD.DnDWrapper):
         else:
             self.annotation_mode = mode
             try:
-                button_widget.configure(fg_color="#3B82F6")
+                button_widget.configure(fg_color="#318216")
             except Exception:
                 pass
 
