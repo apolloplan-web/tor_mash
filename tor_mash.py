@@ -84,6 +84,35 @@ class ZoomEditWindow(ctk.CTkToplevel):
         self.size_entry.insert(0, str(self.current_fontsize))
         self.size_entry.pack(side="right")
 
+　　　　　# 例: ZoomEditWindow.setup_ui() のテキスト設定セクションに追加するコード
+　　　　　# 「フォント選択」UI を作成し、選択変更を受け取るハンドラを設定します。
+
+　　　　　# --- フォント選択（システムフォント一覧） ---
+　　　　　font_frame = ctk.CTkFrame(self.ctrl_frame, fg_color="transparent")
+　　　　　font_frame.pack(fill="x", padx=10, pady=2)
+　　　　　ctk.CTkLabel(font_frame, text="フォント:").pack(side="left")
+
+　　　　　# tkinter の低レベル呼び出しでフォント一覧を取得（追加インポート不要）
+        try:
+            fonts = list(self.tk.call('font', 'families'))
+            fonts = sorted(set(fonts))
+        except Exception:
+            fonts = []
+
+        # CTkOptionMenu を使って表示（customtkinter のバージョンによっては OptionMenu が無ければ別の選択ウィジェットへ）
+        self.combo_font = ctk.CTkOptionMenu(font_frame, values=fonts, command=self.on_font_changed)
+        if fonts:
+            self.current_font_family = fonts[0]
+            self.combo_font.set(self.current_font_family)
+        else:
+            self.current_font_family = None
+            self.combo_font.pack(side="right", fill="x", expand=True)
+
+        # そしてクラスに以下のメソッドを追加：
+        def on_font_changed(self, value):
+            """フォント選択が変わったときのコールバック"""
+            self.current_font_family = value
+        
         # 文字色
         color_frame = ctk.CTkFrame(self.ctrl_frame, fg_color="transparent")
         color_frame.pack(fill="x", padx=10, pady=5)
