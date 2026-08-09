@@ -84,15 +84,15 @@ class ZoomEditWindow(ctk.CTkToplevel):
         self.size_entry.insert(0, str(self.current_fontsize))
         self.size_entry.pack(side="right")
 
-　　　　　# 例: ZoomEditWindow.setup_ui() のテキスト設定セクションに追加するコード
-　　　　　# 「フォント選択」UI を作成し、選択変更を受け取るハンドラを設定します。
+        # 例: ZoomEditWindow.setup_ui() のテキスト設定セクションに追加するコード
+        # 「フォント選択」UI を作成し、選択変更を受け取るハンドラを設定します。
 
-　　　　　# --- フォント選択（システムフォント一覧） ---
-　　　　　font_frame = ctk.CTkFrame(self.ctrl_frame, fg_color="transparent")
-　　　　　font_frame.pack(fill="x", padx=10, pady=2)
-　　　　　ctk.CTkLabel(font_frame, text="フォント:").pack(side="left")
+        # --- フォント選択（システムフォント一覧） ---
+        font_frame = ctk.CTkFrame(self.ctrl_frame, fg_color="transparent")
+        font_frame.pack(fill="x", padx=10, pady=2)
+        ctk.CTkLabel(font_frame, text="フォント:").pack(side="left")
 
-　　　　　# tkinter の低レベル呼び出しでフォント一覧を取得（追加インポート不要）
+        # tkinter の低レベル呼び出しでフォント一覧を取得（追加インポート不要）
         try:
             fonts = list(self.tk.call('font', 'families'))
             fonts = sorted(set(fonts))
