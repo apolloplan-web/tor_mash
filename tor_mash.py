@@ -1,4 +1,5 @@
-﻿import os, sys, re, shutil, tempfile, fitz, pypdf
+﻿import os, sys, re, shutil, tempfile, pypdf
+import pymupdf as fitz
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, colorchooser
 import customtkinter as ctk
@@ -21,7 +22,7 @@ class ZoomEditWindow(ctk.CTkToplevel):
         self.current_page_idx = page_idx
         self.on_close_callback = on_close_callback
 
-        self.title(f"書き換え君2 - ズームアップ編集 (ページ {self.current_page_idx + 1})")
+        self.title(f"tor_mash (ページ {self.current_page_idx + 1})")
         self.geometry("1100x800")
         self.attributes("-topmost", True)
 
