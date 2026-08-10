@@ -168,9 +168,9 @@ class ZoomEditWindow(ctk.CTkToplevel):
         self.canvas.bind("<B1-Motion>", self.on_canvas_drag)
         self.canvas.bind("<ButtonRelease-1>", self.on_canvas_release)
 
-def on_font_changed(self, value):
-    """フォント選択が変わったときのコールバック"""
-    self.current_font_family = value
+    def on_font_changed(self, value):
+        """フォント選択が変わったときのコールバック"""
+        self.current_font_family = value
 
     def set_mode(self, mode):
         self.current_mode = mode
