@@ -1,10 +1,4 @@
-﻿import os
-import sys
-import re
-import shutil
-import tempfile
-import fitz  # PyMuPDF
-import pypdf
+﻿import os, sys, re, shutil, tempfile, fitz, pypdf
 import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, colorchooser
 import customtkinter as ctk
@@ -106,12 +100,8 @@ class ZoomEditWindow(ctk.CTkToplevel):
             self.combo_font.set(self.current_font_family)
         else:
             self.current_font_family = None
-            self.combo_font.pack(side="right", fill="x", expand=True)
-
-        # そしてクラスに以下のメソッドを追加：
-        def on_font_changed(self, value):
-            """フォント選択が変わったときのコールバック"""
-            self.current_font_family = value
+            
+        self.combo_font.pack(side="right", fill="x", expand=True)
         
         # 文字色
         color_frame = ctk.CTkFrame(self.ctrl_frame, fg_color="transparent")
@@ -176,6 +166,10 @@ class ZoomEditWindow(ctk.CTkToplevel):
         self.canvas.bind("<ButtonPress-1>", self.on_canvas_press)
         self.canvas.bind("<B1-Motion>", self.on_canvas_drag)
         self.canvas.bind("<ButtonRelease-1>", self.on_canvas_release)
+
+def on_font_changed(self, value):
+    """フォント選択が変わったときのコールバック"""
+    self.current_font_family = value
 
     def set_mode(self, mode):
         self.current_mode = mode
@@ -284,12 +278,13 @@ class ZoomEditWindow(ctk.CTkToplevel):
                     sz = self.current_fontsize
 
                 try:
+                    fontname = self.current_font_family if self.current_font_family else "japan"
                     page.insert_text(
                         (pdf_x, pdf_y),
                         text,
                         fontsize=sz,
                         color=self.current_fontcolor_rgb,
-                        fontname="japan"
+                        fontname=fontname
                     )
                 except Exception as e:
                     messagebox.showerror("エラー", f"テキスト挿入エラー:{e}", parent=self)
